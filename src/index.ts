@@ -1,33 +1,27 @@
 import fs from 'fs';
 
-interface IInput {
-    char: string;
-    min: number;
-    max: number;
-    str: string;
-}
 const start = () => {
-    const inputArray = fs.readFileSync('./src/pwds.txt').toString().split('\n');
-    const input: IInput[] = inputArray.map((input) => ({
-        char: input.split(' ')[1]?.charAt(0),
-        min: Number.parseInt(input.split(' ')[0].split('-')[0]),
-        max: Number.parseInt(input.split(' ')[0].split('-')[1]),
-        str: input.split(' ')[2]
-    }))
-        .filter((value) => !!value.char);
 
-    const correctPwds = input.filter((value) => {
-        if (value.str.charAt(value.min - 1) !== value.char && value.str.charAt(value.max - 1) !== value.char) {
-            return false;
-        }
+    const makeAnswerArray = (inputArray: string[], right: number, down: number) => {
+        return inputArray
+            .filter((value, index) => Math.floor(index/down) === index/down)
+            .map((value, index) => {
+                const length = value.length;
+                const x = (index * right) - Math.floor((index * right) / length) * length;
+                return value.slice(x)
+            });
+    }
 
-        return !(value.str.charAt(value.min - 1) === value.char && value.str.charAt(value.max - 1) === value.char);
+    const inputArray = fs.readFileSync('./src/input.txt').toString().split('\n').filter((value) => !!value?.length);
 
+    const answer1 = makeAnswerArray(inputArray, 1, 1).filter((value) => value.charAt(0) === '#').length;
+    const answer2 = makeAnswerArray(inputArray, 3, 1).filter((value) => value.charAt(0) === '#').length;
+    const answer3 = makeAnswerArray(inputArray, 5, 1).filter((value) => value.charAt(0) === '#').length;
+    const answer4 = makeAnswerArray(inputArray, 7, 1).filter((value) => value.charAt(0) === '#').length;
+    const answer5 = makeAnswerArray(inputArray, 1, 2).filter((value) => value.charAt(0) === '#').length;
 
-    })
+    console.log(answer1 * answer2 * answer3 * answer4 * answer5);
 
-    console.log(correctPwds);
-    console.log(correctPwds.length);
 };
 
 start();
