@@ -1,26 +1,30 @@
 import fs from 'fs';
 
+interface IPassport {
+    byr?: string;
+    iyr?: string;
+    eyr?: string;
+    hgt?: string;
+    hcl?: string;
+    ecl?: string;
+    pid?: string;
+    cid?: string;
+}
+
 const start = () => {
 
-    const makeAnswerArray = (inputArray: string[], right: number, down: number) => {
-        return inputArray
-            .filter((value, index) => Math.floor(index/down) === index/down)
-            .map((value, index) => {
-                const length = value.length;
-                const x = (index * right) - Math.floor((index * right) / length) * length;
-                return value.slice(x)
-            });
-    }
+    const inputArray = fs.readFileSync('./src/input.txt').toString().split(/\n\n/gm)
+        .map((value) => value.split(/\s/gm))
+        .map((value) => value
+            .map((value) => value.split(':'))
+            .map((value) => ({[value[0]]: value[1]} as IPassport)))
+        .map((value) => value.reduce((o, value) => Object.assign(o, value), {} as IPassport))
+        .filter((value) => value.iyr &&
+        value.byr && value.pid && value.ecl && value.hcl && value.hgt && value.eyr)
 
-    const inputArray = fs.readFileSync('./src/input.txt').toString().split('\n').filter((value) => !!value?.length);
 
-    const answer1 = makeAnswerArray(inputArray, 1, 1).filter((value) => value.charAt(0) === '#').length;
-    const answer2 = makeAnswerArray(inputArray, 3, 1).filter((value) => value.charAt(0) === '#').length;
-    const answer3 = makeAnswerArray(inputArray, 5, 1).filter((value) => value.charAt(0) === '#').length;
-    const answer4 = makeAnswerArray(inputArray, 7, 1).filter((value) => value.charAt(0) === '#').length;
-    const answer5 = makeAnswerArray(inputArray, 1, 2).filter((value) => value.charAt(0) === '#').length;
-
-    console.log(answer1 * answer2 * answer3 * answer4 * answer5);
+    console.log(inputArray);
+    console.log(inputArray.length);
 
 };
 
