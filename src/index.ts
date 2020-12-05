@@ -22,8 +22,8 @@ const start = () => {
     }
 
     const inputArray = fs.readFileSync('./src/input.txt').toString().split(/\n/gm)
-        .map((value) => [value.substring(0, 6), value.substring(7)]);
-
+        .filter((value) => !!value)
+        .map((value) => [value.substring(0, 7), value.substring(7)]);
 
     const result = inputArray.map((value) => {
         const rowValue = value[0].split('').reduce((keepHalf), rows)[0];
@@ -31,7 +31,14 @@ const start = () => {
         return rowValue * 8 + colValue;
     })
 
-     console.log(Math.max(...result));
+
+    const result2 = result
+        .sort()
+        .filter((value, index, array) =>
+            (array[index + 1] - value) == 2)
+
+    console.log(result2[0] + 1)
+
 
 };
 
