@@ -2,23 +2,21 @@ import fs from 'fs';
 
 const start = () => {
 
-    const inputArray = fs.readFileSync('./src/input.txt').toString().trimEnd().split(/\n\n/gm)
-        .map((value) => value.split(/\n/g))
-        .map((value) => ({gr_size: value.length, str: value
-                .join('')
-                .split('')
-                .sort()
-        }))
-        .map((main_value) => ({...main_value, str: main_value.str
-                .filter((value, i, array) => array
-                    .filter((sub_value) => sub_value == value)?.length == main_value.gr_size)
-                .filter((value, i, array) => value != array[i+1])
-        }))
-        .reduce((prev, current) => prev + current.str.length, 0);
 
-    console.log(inputArray)
+    const input2Array = fs.readFileSync('./src/input.txt').toString().trimEnd().split(/\n/gm)
+        .map((value) => value.split('contain'))
 
+    console.log(input2Array)
+    let tmp2Array = ['shiny gold']
+    let resArray: string[] = []
 
+    do {
+        tmp2Array = [...input2Array
+            .filter((value) => !!tmp2Array.find((value2) => value[1].includes(value2)))
+            .map((value) => value[0].trimEnd().slice(0, value[0].lastIndexOf(' b')))]
+        resArray = [...resArray, ...tmp2Array]
+    } while (tmp2Array.length)
+    console.log(resArray.sort().filter((value, i, array) => value.localeCompare(array[i+1])).length)
 };
 
 start();
